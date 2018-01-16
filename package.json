@@ -5,8 +5,11 @@
   "main": "src/index.js",
   "scripts": {
     "commit": "git-cz",
+    "check-coverage": "istanbul check-coverage --statements 100 --branches 100 --functions 100 --lines 100",
+    "report-coverage": "cat ./coverage/lcov.info | codecov",
     "test": "mocha src/*.test.js -w",
-    "test:single": "mocha src/*.test.js",
+    "test:single": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec src/*",
+    "test:travis": "istanbul cover -x *.test.js _mocha -- -R spec src/index.test.js",
     "travis-deploy-once": "travis-deploy-once",
     "semantic-release": "semantic-release"
   },
@@ -30,9 +33,11 @@
   },
   "devDependencies": {
     "chai": "4.1.2",
+    "codecov.io": "0.1.6",
     "commitizen": "2.9.6",
     "cz-conventional-changelog": "2.1.0",
     "ghooks": "2.0.2",
+    "istanbul": "0.4.5",
     "mocha": "4.1.0",
     "semantic-release": "^11.0.2",
     "travis-deploy-once": "^4.3.0"
@@ -42,7 +47,7 @@
   },
   "config": {
     "ghooks": {
-      "pre-commit": "npm run test:single"
+      "pre-commit": "npm run test:single && npm run check-coverage"
     }
   }
 }
